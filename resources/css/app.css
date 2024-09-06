@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Jambono";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/fonts/Jambono-Medium.ttf");
+}
+
+@font-face {
+    font-family: "Jambono";
+    font-style: normal;
+    font-weight: 300;
+    src: url("/fonts/Jambono-Light.ttf");
+}
+
+@font-face {
+    font-family: "Jambono";
+    font-style: normal;
+    font-weight: 900;
+    src: url("/fonts/Jambono-Black.ttf");
+}
