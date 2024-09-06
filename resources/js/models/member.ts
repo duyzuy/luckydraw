@@ -5,6 +5,8 @@ export type MemberType = {
     email: string;
     member_type: "employee" | "guest";
     position: string;
+    address: string;
+    department: string;
     checked_in: boolean;
     member_code: string;
     member_keyword: string;

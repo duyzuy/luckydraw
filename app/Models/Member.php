@@ -12,7 +12,7 @@ class Member extends Model
 
     protected $table = 'members';
 
-    protected $fillable = ['name', 'phone', 'email', 'member_type', 'checked_in', 'member_code', 'member_keyword'];
+    protected $fillable = ['name', 'phone', 'email', 'member_type', 'checked_in', 'member_code', 'member_keyword', 'address', 'department', 'position'];
 
     protected $keyType = 'string';
 

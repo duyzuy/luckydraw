@@ -7,6 +7,8 @@ type MemberPayload = {
     member_code?: string;
     member_keyword?: string;
     position?: string;
+    department?: string;
+    address?: string;
 };
 
 export class MemberFormData implements MemberPayload {
@@ -18,6 +20,8 @@ export class MemberFormData implements MemberPayload {
     member_code?: string;
     position?: string;
     member_keyword?: string;
+    department?: string;
+    address?: string;
 
     constructor(
         name: string | undefined,
@@ -27,7 +31,9 @@ export class MemberFormData implements MemberPayload {
         checked_in: boolean | undefined,
         member_code: string | undefined,
         member_keyword: string | undefined,
-        position: string | undefined
+        position: string | undefined,
+        address: string | undefined,
+        department: string | undefined
     ) {
         this.name = name;
         this.phone = phone;
@@ -37,5 +43,7 @@ export class MemberFormData implements MemberPayload {
         this.member_code = member_code;
         this.member_keyword = member_keyword;
         this.position = position;
+        this.address = address;
+        this.department = department;
     }
 }

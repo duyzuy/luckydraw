@@ -25,6 +25,8 @@ const DrawerMember: React.FC<DrawerMemberProps> = ({
         false,
         "",
         "",
+        "",
+        "",
         ""
     );
 
@@ -138,10 +140,30 @@ const DrawerMember: React.FC<DrawerMemberProps> = ({
                             />
                         </Form.Item>
                         <Form.Item
+                            label="Bộ phận"
+                            validateStatus={
+                                errors?.department ? "error" : undefined
+                            }
+                            help={errors?.department}
+                        >
+                            <TextInput
+                                placeholder="Bộ phận"
+                                value={data.department}
+                                onChange={(ev) =>
+                                    onChangeFormData(
+                                        "department",
+                                        ev.target.value
+                                    )
+                                }
+                                className="w-full"
+                            />
+                        </Form.Item>
+                        <Form.Item
                             label="Vị trí"
-                            required
-                            validateStatus={errors?.phone ? "error" : undefined}
-                            help={errors?.phone}
+                            validateStatus={
+                                errors?.position ? "error" : undefined
+                            }
+                            help={errors?.position}
                         >
                             <TextInput
                                 placeholder="Vị trí"
@@ -178,6 +200,16 @@ const DrawerMember: React.FC<DrawerMemberProps> = ({
                                 onChange={(value) =>
                                     onChangeFormData("member_type", value)
                                 }
+                            />
+                        </Form.Item>
+                        <Form.Item label="Địa chỉ">
+                            <TextInput
+                                placeholder="Địa chỉ"
+                                value={data.address}
+                                onChange={(ev) =>
+                                    onChangeFormData("address", ev.target.value)
+                                }
+                                className="w-full"
                             />
                         </Form.Item>
                         <Form.Item

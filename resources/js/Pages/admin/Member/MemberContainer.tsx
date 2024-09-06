@@ -9,7 +9,9 @@ import { MemberType } from "@/models/member";
 import MemberList from "./components/MemberList";
 import { Button, Form, Input } from "antd";
 import MemberImportForm from "./components/MemberImportForm";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import DrawerCreate from "./components/DrawerCreate";
+import { PlusOutlined } from "@ant-design/icons";
 
 type MemberContainerProps = PageProps & {
     memberList: MemberType[];
@@ -23,38 +25,8 @@ const MemberContainer: React.FC<MemberContainerProps> = ({
     memberList,
     flash,
 }) => {
-    const initMemberForm = new MemberFormData(
-        "",
-        "",
-        "",
-        "employee",
-        false,
-        "",
-        "",
-        ""
-    );
-
-    const { data, setData, post, processing, errors, reset, progress } =
-        useForm(initMemberForm);
+    const [openDrawer, setOpenDrawer] = useState(false);
     const message = useMessage();
-
-    const onChangeFormData: MemberFormProps["onChange"] = (key, value) => {
-        setData((prev) => ({
-            ...prev,
-            [key]: value,
-        }));
-    };
-
-    const handleSubmit: React.FormEventHandler<HTMLFormElement> = (evt) => {
-        evt.preventDefault();
-        post(route("member.store"), {
-            preserveScroll: true,
-            onSuccess: () => {
-                message.success("Thêm mới thành công.");
-                reset();
-            },
-        });
-    };
 
     useEffect(() => {
         if (flash.success) {
@@ -75,28 +47,34 @@ const MemberContainer: React.FC<MemberContainerProps> = ({
         >
             <Head title="Nhóm giải thưởng" />
             <div className="py-8">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-3 gap-4">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg col-span-1 p-6">
-                        <h3 className="text-lg font-bold mb-6">Thêm mới</h3>
-                        <MemberForm
-                            value={data}
-                            errors={errors}
-                            loading={processing}
-                            onSubmit={handleSubmit}
-                            onChange={onChangeFormData}
-                        />
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-end">
+                        <MemberImportForm />
                     </div>
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg col-span-2 p-6">
-                        <div>
-                            <h3 className="text-lg font-bold mb-6">
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <div className="flex items-center gap-x-3 mb-6">
+                            <h3 className="text-lg font-bold">
                                 Danh sách người chơi
                             </h3>
-                            <MemberImportForm />
+                            <Button
+                                type="primary"
+                                ghost
+                                size="small"
+                                icon={<PlusOutlined />}
+                                onClick={() => setOpenDrawer(true)}
+                            >
+                                Thêm mới
+                            </Button>
                         </div>
+
                         <MemberList items={memberList} />
                     </div>
                 </div>
             </div>
+            <DrawerCreate
+                open={openDrawer}
+                onClose={() => setOpenDrawer(false)}
+            />
         </AuthenticatedLayout>
     );
 };

@@ -57,6 +57,8 @@ class MemberController extends Controller
         $member->checked_in = $request->checked_in;
         $member->member_code = $request->member_code;
         $member->position = $request->position;
+        $member->department = $request->department;
+        $member->address = $request->address;
         $member->member_keyword = str_replace(" ", "", stripVN($member->name));
 
         $member->save();
@@ -111,6 +113,9 @@ class MemberController extends Controller
         $member->member_type = $request->member_type;
         $member->checked_in = $request->checked_in;
         $member->member_code = $request->member_code;
+        $member->position = $request->position;
+        $member->department = $request->department;
+        $member->address = $request->address;
         $member->member_keyword = str_replace(" ", "", stripVN($member->name));
 
 
