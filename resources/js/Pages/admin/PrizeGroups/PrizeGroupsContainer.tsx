@@ -1,50 +1,59 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 import { Head } from "@inertiajs/react";
-
-import { PrizeGroupFromData } from "./modules/prizeGroup.interface";
-import { useForm } from "@inertiajs/react";
+import { useState } from "react";
 import { PageProps } from "@/types";
 import { PrizeGroupType } from "@/models/prizeGroup";
-import PrizeGroupForm, {
-    PrizeGroupFormProps,
-} from "./components/PrizeGroupForm";
-import PrizeGroupList from "./components/PrizeGroupList";
+import PrizeGroupForm from "./components/PrizeGroupForm";
+
 import { useMessage } from "@/hooks/useMessage";
+import TableData from "@/Components/TableData";
+import { columns } from "./column";
+import DrawerPrizeGroup from "./components/DrawerPrizeGroup";
+import { router } from "@inertiajs/react";
+import { CampaignType } from "@/models/campaign";
+import { Button } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
 type PrizeGroupsListProps = PageProps & {
     items: PrizeGroupType[];
+    campaigns: CampaignType[];
 };
 const PrizeGroupsContainer: React.FC<PrizeGroupsListProps> = ({
     auth,
     items,
+    campaigns,
 }) => {
-    const initFormData = new PrizeGroupFromData("", "", true, 0, "per_one");
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [action, setAction] = useState<"create" | "edit">();
+    const [editRecord, setEditRecord] = useState<PrizeGroupType>();
 
-    const { data, setData, post, processing, errors, reset, progress } =
-        useForm(initFormData);
     const message = useMessage();
 
-    const onChangeFormData: PrizeGroupFormProps["onChange"] = (key, value) => {
-        setData((prev) => ({
-            ...prev,
-            [key]: value,
-        }));
+    const setCreateCampaign = () => {
+        setAction("create");
+        setOpenDrawer(true);
+    };
+    const setEdit = (record: PrizeGroupType) => {
+        setEditRecord(record);
+        setAction("edit");
+        setOpenDrawer(true);
     };
 
-    const handleSubmit: React.FormEventHandler<HTMLFormElement> = (evt) => {
-        evt.preventDefault();
-        post("/prize-group", {
-            preserveScroll: true,
+    const cancelEdit = () => {
+        setEditRecord(undefined);
+        setAction(undefined);
+        setOpenDrawer(false);
+    };
+
+    const confirmDelete = (record: PrizeGroupType) => {
+        router.delete(route("prizeGroup.destroy", record.id), {
             onSuccess: () => {
-                console.log("success");
-                message.success("Thêm mới thành công.");
-                reset();
+                message.success("Xoá thành công");
             },
         });
     };
 
-    console.log(items);
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -57,23 +66,37 @@ const PrizeGroupsContainer: React.FC<PrizeGroupsListProps> = ({
             <Head title="Prize groups" />
 
             <div className="py-8">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-3 gap-4">
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg col-span-1 p-6">
-                        <h3 className="text-lg font-bold mb-6">Thêm mới</h3>
-                        <PrizeGroupForm
-                            value={data}
-                            errors={errors}
-                            onChange={onChangeFormData}
-                            onSubmit={handleSubmit}
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg col-span-3 p-6">
+                        <div className="flex items-center gap-x-3 mb-6">
+                            <h3 className="text-lg font-bold">
+                                Danh sách nhóm giải
+                            </h3>
+                            <Button
+                                type="primary"
+                                size="small"
+                                ghost
+                                icon={<PlusOutlined />}
+                                onClick={setCreateCampaign}
+                            >
+                                Thêm mới
+                            </Button>
+                        </div>
+                        <TableData
+                            dataSource={items}
+                            columns={columns}
+                            onEdit={setEdit}
+                            onDelete={confirmDelete}
                         />
                     </div>
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg col-span-2 p-6">
-                        <h3 className="text-lg font-bold mb-6">
-                            Danh sách nhóm giải
-                        </h3>
-                        <PrizeGroupList items={items} />
-                    </div>
                 </div>
+                <DrawerPrizeGroup
+                    campaigns={campaigns}
+                    action={action}
+                    open={openDrawer}
+                    onClose={cancelEdit}
+                    initialValue={editRecord}
+                />
             </div>
         </AuthenticatedLayout>
     );

@@ -19,35 +19,76 @@ export default function AuthenticatedLayout({
 
     const MENU_ITEMS = [
         {
-            label: "Dashboard",
-            key: "dashboard",
-            href: route("dashboard"),
-        },
-        {
-            label: "Nhóm giải",
-            key: "prizeGroup.index",
-            href: route("prizeGroup.index"),
-        },
-        {
-            label: "Tên giải",
-            key: "prize.index",
-            href: route("prize.index"),
+            label: "Sự kiện",
+            key: "campaign.index",
+            href: route("campaign.index"),
+            children: [
+                {
+                    label: "Chiến dịch",
+                    key: "campaign.index",
+                    href: route("campaign.index"),
+                },
+                {
+                    label: "Giải thưởng",
+                    key: "prizeGroup.index",
+                    href: route("prizeGroup.index"),
+                },
+                {
+                    label: "Phần quà",
+                    key: "prize.index",
+                    href: route("prize.index"),
+                },
+            ],
         },
         {
             label: "Người chơi",
             key: "member.index",
             href: route("member.index"),
+            children: [
+                {
+                    label: "Phòng ban",
+                    key: "department.index",
+                    href: route("department.index"),
+                },
+                {
+                    label: "Công ty",
+                    key: "company.index",
+                    href: route("company.index"),
+                },
+            ],
         },
         {
             label: "Winner",
             key: "winner.index",
             href: route("winner.index"),
         },
+        {
+            label: "Checkin",
+            key: "checkin.index",
+            href: route("checkin.index"),
+        },
+        {
+            label: "Tạo QRCode",
+            key: "qrcode.index",
+            href: route("qrcode.index"),
+        },
+        {
+            label: "Thư viện ảnh",
+            key: "media.index",
+            href: route("media.index"),
+            children: [
+                {
+                    label: "Thêm mới",
+                    key: "sub.media.index",
+                    href: route("media.index"),
+                },
+            ],
+        },
     ];
     return (
         <Layout>
-            <div className="min-h-screen bg-gray-100">
-                <nav className="bg-white border-b border-gray-100">
+            <div className="min-h-screen bg-gray-50 bg-[url('/images/admin/backgorund-map.svg')]">
+                <nav className="bg-white border-b border-gray-100 relative z-10">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex justify-between h-16">
                             <div className="flex">
@@ -58,13 +99,46 @@ export default function AuthenticatedLayout({
                                 </div>
                                 <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                     {MENU_ITEMS.map((item, _index) => (
-                                        <NavLink
+                                        <div
                                             key={_index}
-                                            href={item.href}
-                                            active={route().current(item.key)}
+                                            className="relative nav-item group/item"
                                         >
-                                            {item.label}
-                                        </NavLink>
+                                            <NavLink
+                                                key={_index}
+                                                href={item.href}
+                                                active={route().current(
+                                                    item.key
+                                                )}
+                                                className="h-full"
+                                            >
+                                                {item.label}
+                                            </NavLink>
+                                            {item.children ? (
+                                                <div className="dropdown-item absolute bg-white shadow-md w-[200px] p-4 rounded-md invisible group-hover/item:visible">
+                                                    {item.children.map(
+                                                        (childItem) => (
+                                                            <div
+                                                                className="nav-item py-1"
+                                                                key={
+                                                                    childItem.key
+                                                                }
+                                                            >
+                                                                <NavLink
+                                                                    key={_index}
+                                                                    href={
+                                                                        childItem.href
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        childItem.label
+                                                                    }
+                                                                </NavLink>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
+                                            ) : null}
+                                        </div>
                                     ))}
                                 </div>
                             </div>

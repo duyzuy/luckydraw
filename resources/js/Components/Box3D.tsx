@@ -13,13 +13,8 @@ const StyledBox = styled.div`
         cursor: pointer;
         position: relative;
         transition: all 150ms ease-in-out;
-        border: 1px solid #cc1312;
+        border: 2px solid #cc1312;
         background-image: linear-gradient(-180deg, #fff141 0%, #fe9313 100%);
-        box-shadow: 0 0.2rem 0.1rem 0 rgba(0, 0, 0, 0.2),
-            0 -0.125rem 0.75rem rgb(227 0 0) inset,
-            0 0.375rem 0.125rem rgba(255, 255, 255, 0.4) inset,
-            0 0.125rem 0.25rem 0 rgb(212 148 21) inset;
-
         &::before {
             content: "";
             display: block;

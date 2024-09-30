@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('winners', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('member_id')->references('id')->on('members');
+            $table->foreignUuid('campaign_id')->references('id')->on('campaigns');
             $table->foreignUuid('prize_id')->references('id')->on('prizes');
             $table->text('note');
             $table->timestamps();

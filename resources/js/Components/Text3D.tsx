@@ -11,9 +11,11 @@ const Text3D: React.FC<Text3DProps> = ({
     color = "red",
 }) => {
     return color === "red" ? (
-        <Text3DRedStyled className={className}>{children}</Text3DRedStyled>
+        <Text3DRedStyled className={`font-jambono ${className}`}>
+            {children}
+        </Text3DRedStyled>
     ) : (
-        <Text3DYellowStyled className={className}>
+        <Text3DYellowStyled className={`font-jambono ${className}`}>
             {children}
         </Text3DYellowStyled>
     );
@@ -30,8 +32,7 @@ const Text3DRedStyled = styled.h3`
             1px 6px 1px #bd0000, 1px 7px 1px #bd0000, 1px 8px 1px #bd0000,
             1px 9px 1px #bd0000, 1px 10px 1px #bd0000,
             1px 18px 6px rgba(16, 16, 16, 0.2),
-            1px 16px 10px rgba(16, 16, 16, 0.2),
-            1px 15px 30px rgba(16, 16, 16, 0.2),
+            1px 16px 10px rgba(16, 16, 16, 0.1),
             1px 20px 40px rgba(16, 16, 16, 0);
     }
 `;
@@ -46,8 +47,7 @@ const Text3DYellowStyled = styled.h3`
             1px 6px 1px #e77900, 1px 7px 1px #e77900, 1px 8px 1px #e77900,
             1px 9px 1px #e77900, 1px 10px 1px #e77900,
             1px 18px 6px rgba(16, 16, 16, 0.2),
-            1px 16px 10px rgba(16, 16, 16, 0.2),
-            1px 15px 30px rgba(16, 16, 16, 0.2),
-            1px 20px 40px rgba(16, 16, 16, 0);
+            1px 16px 10px rgba(16, 16, 16, 0.1),
+            1px 20px 30px rgba(16, 16, 16, 0);
     }
 `;

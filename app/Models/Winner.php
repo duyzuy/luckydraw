@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 use App\Models\Prize;
+use App\Models\Campaign;
 
 class Winner extends Model
 {
@@ -32,6 +33,10 @@ class Winner extends Model
     public function member_info(): HasOne
     {
         return $this->hasOne(Member::class, 'id', 'member_id');
+    }
+    public function campaign(): HasOne
+    {
+        return $this->hasOne(Campaign::class, 'id', 'campaign_id');
     }
     // public function prizeGroup()
     // {

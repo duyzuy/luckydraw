@@ -122,6 +122,9 @@ class DrawController extends Controller
 
         // return to_route('draw.index', [$group_id, 'code' => $lucky_member->member_code]);
     }
+
+
+
     public function reSpin(Request $request, $group_id)
     {
         Validator::make($request->all(), [

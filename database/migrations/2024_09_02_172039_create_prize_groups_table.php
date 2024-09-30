@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('prize_groups', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('eng_name');
+            $table->string('image')->nullable();
             $table->boolean('actived');
             $table->enum('draw_type', ['per_one', 'all_one']);
+            $table->foreignUuid('campaign_id')->nullable()->references('id')->on('campaigns');
             $table->integer('order')->default(0);
             $table->timestamps();
         });

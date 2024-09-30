@@ -22,3 +22,27 @@
     font-weight: 900;
     src: url("/fonts/Jambono-Black.ttf");
 }
+
+@property --angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+}
+
+@keyframes draw-spinning {
+    from {
+        --angle: 0deg;
+    }
+    to {
+        --angle: 360deg;
+    }
+}
+
+@keyframes rotation {
+    from {
+        transform: perspective(1000px) rotateY(45deg) rotateX(0);
+    }
+    to {
+        transform: perspective(1000px) rotateY(45deg) rotateX(360deg);
+    }
+}

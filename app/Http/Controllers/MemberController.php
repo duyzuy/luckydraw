@@ -8,12 +8,12 @@ use App\Models\Member;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-use App\Exports\MemberExport;
 use App\Imports\MemberImport;
 use Maatwebsite\Excel\Facades\Excel;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Storage;
 use function App\Helpers\stripVN;
 
 class MemberController extends Controller
@@ -21,15 +21,19 @@ class MemberController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        //
-        // $prize_list = Prize::with('prizeGroup')->get();
-        $members = Member::query()->orderBy('created_at', 'asc')->get();
 
+        if ($request->search) {
+            $keyword = Str::lower(Str::replace(" ", "", stripVN($request->search)));
+
+            $members = Member::query()->where('member_keyword', 'LIKE', "%{$keyword}%")->paginate(15);
+        } else {
+            $members = Member::query()->orderBy('created_at', 'desc')->paginate(15);
+        }
+        $members->load(['department', 'campaign']);
         return Inertia::render('admin/Member/MemberContainer', [
-            'memberList' => $members,
+            'data'      => $members,
         ]);
     }
 
@@ -42,11 +46,13 @@ class MemberController extends Controller
 
         Validator::make($request->all(), [
             'name' => 'required|max:255',
-            'email' => 'email|required',
-            'member_type'   =>  'required',
+            'email' =>  'sometimes|nullable|email',
             'member_code'   =>  'required',
-            'phone'     =>  'required'
         ])->validate();
+
+
+
+        $keyword = $this->generate_keyword($request->name, $request->phone, $request->member_code, $request->email);
 
         $member = new Member();
 
@@ -59,11 +65,19 @@ class MemberController extends Controller
         $member->position = $request->position;
         $member->department = $request->department;
         $member->address = $request->address;
-        $member->member_keyword = str_replace(" ", "", stripVN($member->name));
-
+        $member->member_keyword = Str::lower($keyword);
         $member->save();
 
+        /**
+         * generate qrcode for checkin purpose.
+         */
+        $path = 'qrcode/checkin' . '/' . time() . '-' .  $member->id . '.' . 'svg';
+        $codeString = "ID:{$member->id};CODE:{$request->member_code}";
+        $qrcode = QrCode::size(512)->margin(3)->errorCorrection('M')->generate($codeString);
+        Storage::disk('local')->put($path, $qrcode);
 
+        $member->qrcode_url = $path;
+        $member->save();
         return to_route('member.index');
     }
 
@@ -80,14 +94,17 @@ class MemberController extends Controller
      */
     public function import(Request $request)
     {
-        //
-        // dd($request->file('file'));
         // Validate incoming request data
         $request->validate([
-            'file' => 'required',
+            'file' => 'required|file|mimes:xlsx,xls',
+            'campaign_id' => 'required',
         ]);
 
-        Excel::import(new MemberImport, $request->file('file'));
+        $file = $request->file('file');
+        $campaign_id = $request->campaign_id;
+        Excel::import(new MemberImport($campaign_id), $file);
+
+        // $array = Excel::toArray(new MemberImport($campaign_id), $file);
 
         return back()->with('success', 'Import success');
     }
@@ -101,11 +118,10 @@ class MemberController extends Controller
         $member = Member::find($id);
         Validator::make($request->all(), [
             'name' => 'required|max:255',
-            'email' => 'email|required',
-            'member_type'   =>  'required',
             'member_code'   =>  'required',
-            'phone'     =>  'required'
         ])->validate();
+
+        $keyword = $this->generate_keyword($request->name, $request->phone, $request->member_code, $request->email);
 
         $member->name = $request->name;
         $member->phone = $request->phone;
@@ -116,8 +132,7 @@ class MemberController extends Controller
         $member->position = $request->position;
         $member->department = $request->department;
         $member->address = $request->address;
-        $member->member_keyword = str_replace(" ", "", stripVN($member->name));
-
+        $member->member_keyword = Str::lower($keyword);
 
         $member->save();
 
@@ -130,12 +145,45 @@ class MemberController extends Controller
     public function destroy($id)
     {
         //
+        // $member = Member::where('id', $id)->firstOrFail();
+
 
         if (Member::where('id', $id)->exists()) {
 
             Member::where('id', $id)->delete();
-            return to_route('member.index');
+            // return to_route('member.index');
+            return redirect()->back()->with('success', 'Xoá member thành công');
         }
-        return redirect()->back()->with('error', 'Id is not exists');
+        return redirect()->back()->with('error', 'Member Không tồn tại.');
+    }
+    public function destroyAll()
+    {
+        //
+        Member::truncate();
+        return to_route('member.index')->with('success', "Làm mới danh sách thành công.");
+    }
+
+    public function generate_keyword($name, $phone, $member_code, $email)
+    {
+        return Str::replace(" ", "", stripVN($name)) . Str::trim($phone) . Str::trim($member_code) . Str::lower($email);
+    }
+    public function generate_qrcode()
+    {
+        $members = Member::all();
+
+
+        foreach ($members as $key => $member) {
+
+            if ($member->qrcode_url === null) {
+
+                $path = 'qrcode/checkin' . '/' . time() . '-' .  $member->id . '.' . 'svg';
+                $codeString = "ID:{$member->id};CODE:{$member->member_code}";
+                $qrcode = QrCode::size(512)->margin(3)->errorCorrection('M')->generate($codeString);
+                Storage::disk('local')->put($path, $qrcode);
+                $member->qrcode_url = $path;
+                $member->save();
+            }
+        }
+        return redirect()->back()->with('success', 'Generate success');
     }
 }

@@ -1,5 +1,5 @@
 type MemberPayload = {
-    name?: string;
+    full_name?: string;
     phone?: string;
     email?: string;
     member_type?: "employee" | "guest";
@@ -11,8 +11,10 @@ type MemberPayload = {
     address?: string;
 };
 
-export class MemberFormData implements MemberPayload {
-    name?: string;
+export class MemberFormData {
+    full_name?: string;
+    first_name?: string;
+    last_name?: string;
     phone?: string;
     email?: string;
     member_type?: "employee" | "guest";
@@ -20,11 +22,19 @@ export class MemberFormData implements MemberPayload {
     member_code?: string;
     position?: string;
     member_keyword?: string;
-    department?: string;
     address?: string;
+    department_id?: string;
+    country: string;
+    city: string;
+    state: string;
+    province: string;
+    company: string;
+    campaign_id: string;
 
     constructor(
-        name: string | undefined,
+        full_name: string | undefined,
+        first_name: string | undefined,
+        last_name: string | undefined,
         phone: string | undefined,
         email: string | undefined,
         member_type: "employee" | "guest" | undefined,
@@ -33,9 +43,18 @@ export class MemberFormData implements MemberPayload {
         member_keyword: string | undefined,
         position: string | undefined,
         address: string | undefined,
-        department: string | undefined
+        department_id: string | undefined,
+        country: string,
+        city: string,
+        state: string,
+        province: string,
+        company: string,
+        campaign_id: string
     ) {
-        this.name = name;
+        this.full_name = full_name;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.department_id = department_id;
         this.phone = phone;
         this.email = email;
         this.member_type = member_type;
@@ -44,6 +63,11 @@ export class MemberFormData implements MemberPayload {
         this.member_keyword = member_keyword;
         this.position = position;
         this.address = address;
-        this.department = department;
+        this.country = country;
+        this.city = city;
+        this.state = state;
+        this.province = province;
+        this.company = company;
+        this.campaign_id = campaign_id;
     }
 }

@@ -2,8 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Prize;
-use App\Models\PrizeGroup;
+use App\Models\Campaign;
+use App\Models\Company;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -31,10 +32,10 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $prizes = Prize::all();
-        $prizeGroup = PrizeGroup::orderBy('order', 'asc')->where('actived', 1)->get();
 
-
+        $campaigns = Campaign::where('status', 'publish')->orderBy('created_at', 'desc')->get();
+        $departments = Department::all();
+        $companies = Company::all();
 
         return [
             ...parent::share($request),
@@ -45,12 +46,15 @@ class HandleInertiaRequests extends Middleware
                 return [
                     'success' => $request->session()->get('success'),
                     'error' => $request->session()->get('error'),
+                    'winner'   => $request->session()->get('winner'),
+                    'winners' => $request->session()->get('winners'),
+                    'drawType'  =>  $request->session()->get('drawType'),
                 ];
             },
             'share' => [
-                'prize' => $prizes,
-                'prizeGroups' =>  $prizeGroup
-
+                'campaigns'     =>      $campaigns,
+                'departments'   =>      $departments,
+                'companies'     =>      $companies
             ]
         ];
     }

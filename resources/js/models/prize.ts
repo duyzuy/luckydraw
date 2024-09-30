@@ -4,7 +4,7 @@ export type PrizeType = {
     id: string;
     name: string;
     quantity: number;
-    image: string;
+    image: string | null;
     prize_group: PrizeGroupType;
     prize_group_id: string;
     created_at: string;
