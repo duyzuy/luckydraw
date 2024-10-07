@@ -27,6 +27,7 @@ class HomeController extends Controller
         ]);
     }
 
+
     public function campaignIndex($id)
     {
 
@@ -57,6 +58,39 @@ class HomeController extends Controller
             'winners'       =>      $winners,
         ]);
     }
+
+    public function wheelIndex($campaignId)
+    {
+
+
+        $campaign = Campaign::where('id', $campaignId)->firstOrFail();
+
+        $prizeGroups = PrizeGroup::where([['actived', 1], ['campaign_id', $campaignId]])->withCount('prizes')->orderBy('order', 'asc')->get();
+
+        $prizeGroups->load(['prizes' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }]);
+
+
+        $members = Member::where([['campaign_id', $campaignId], ['checked_in', true]])->orderBy('member_code', 'asc')->get();
+        $members->load(['campaign', 'department', 'company']);
+
+        // $winners = Winner::where('campaign_id', $id)->get();
+        // $winners->load(['member_info', 'prize', 'campaign', "member_info.department", 'member_info.company', 'prize.prizeGroup']);
+        // $winners->groupBy('prize.prize_group_id');
+
+
+        $winners = Winner::where('campaign_id', $campaignId)->get();
+        $winners->load(['prize', 'member_info', 'campaign', 'prize.prizeGroup']);
+
+        return Inertia::render('Campaign/Wheel/WheelContainer', [
+            'campaign'      =>      $campaign,
+            'prizeGroups'   =>      $prizeGroups,
+            'members'       =>      $members,
+            'winners'       =>      $winners,
+        ]);
+    }
+
 
     /**
      * Detail prize group

@@ -28,16 +28,16 @@ export default function AuthenticatedLayout({
                     key: "campaign.index",
                     href: route("campaign.index"),
                 },
-                {
-                    label: "Giải thưởng",
-                    key: "prizeGroup.index",
-                    href: route("prizeGroup.index"),
-                },
-                {
-                    label: "Phần quà",
-                    key: "prize.index",
-                    href: route("prize.index"),
-                },
+                // {
+                //     label: "Giải thưởng",
+                //     key: "prizeGroup.index",
+                //     href: route("prizeGroup.index"),
+                // },
+                // {
+                //     label: "Phần quà",
+                //     key: "prize.index",
+                //     href: route("prize.index"),
+                // },
             ],
         },
         {

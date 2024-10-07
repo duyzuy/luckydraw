@@ -28,6 +28,8 @@ Route::prefix('campaign')->group(function () {
     Route::post('/{campaignId}/draw/{prizeGroupId}/per-once', [HomeController::class, 'prizeGroupSpinPerOnce'])->name('home.campaign.prizeGroup.spin.perOne');
     Route::post('/{campaignId}/draw/{prizeGroupId}/multiple-once', [HomeController::class, 'prizeGroupSpinMultipleOnce'])->name('home.campaign.prizeGroup.spin.multipleOne');
     Route::patch('/{campaignId}/draw/{prizeGroupId', [HomeController::class, 'reSpin'])->name('home.campaign.prizeGroup.reSpin');
+
+    Route::get('/{campaignId}/wheel', [HomeController::class, 'wheelIndex'])->name('home.campaign.wheel.index');
 });
 
 
